@@ -1,0 +1,912 @@
+{
+  "name": "Social Media Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -96
+      ],
+      "id": "83cbf1d2-a1a4-4476-a7fe-918375bdedc3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw",
+          "mode": "list",
+          "cachedResultName": "Visa Application Automation ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 433195181,
+          "mode": "list",
+          "cachedResultName": "zernio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit#gid=433195181"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "pending"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        144,
+        -96
+      ],
+      "id": "a0faab6c-2f4a-4e09-be20-e5be02f19f6b",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F6g22eR284kb7Q7z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.Drive_URL }}",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "a1173a14-9177-4282-b3d0-2895067ec8c9",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "66kcxn4wrhxsWI8Z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "posts",
+        "operation": "create",
+        "content": "={{ $('Get row(s) in sheet').item.json.Caption }}",
+        "publishNow": true,
+        "tags": "automation,  n8n",
+        "selectedPlatforms": [
+          "instagram",
+          "facebook"
+        ],
+        "instagramAccounts": [
+          "6ab61f4684cc6e3ac0e45a70"
+        ],
+        "facebookAccounts": [
+          "6ab61f7aee3ca3044b073058"
+        ],
+        "mediaItems": {
+          "items": [
+            {
+              "url": "={{ $json.files[0].url }}",
+              "filename": "local_businses.jpg"
+            }
+          ]
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-late.late",
+      "typeVersion": 1,
+      "position": [
+        848,
+        -96
+      ],
+      "id": "7100d10a-4b83-4ce4-8fe3-fd5c3f39eae6",
+      "name": "Create post",
+      "credentials": {
+        "lateApi": {
+          "id": "cdM4cq0REcqf44AN",
+          "name": "Zernio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-late.late",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "f2067556-0ff1-490b-8736-49fc6420f146",
+      "name": "Upload media1",
+      "credentials": {
+        "lateApi": {
+          "id": "cdM4cq0REcqf44AN",
+          "name": "Zernio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw",
+          "mode": "list",
+          "cachedResultName": "Visa Application Automation ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 433195181,
+          "mode": "list",
+          "cachedResultName": "zernio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit#gid=433195181"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "posted",
+            "Zernio_Post_ID": "={{ $('Create post').item.json.post._id }}",
+            "Post_ID": "={{ $('Get row(s) in sheet').item.json.Post_ID }}"
+          },
+          "matchingColumns": [
+            "Post_ID"
+          ],
+          "schema": [
+            {
+              "id": "Post_ID",
+              "displayName": "Post_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Drive_URL",
+              "displayName": "Drive_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Media_Type",
+              "displayName": "Media_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Zernio_Post_ID",
+              "displayName": "Zernio_Post_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1376,
+        -208
+      ],
+      "id": "67313694-3691-46d9-8067-d32db99cbb37",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F6g22eR284kb7Q7z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "179ab1d9-c31b-40de-9cac-5e5757d51204",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "={{ $json.message }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1056,
+        -96
+      ],
+      "id": "5397f753-254a-45cc-ae09-ba8ee66d8ce3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw",
+          "mode": "list",
+          "cachedResultName": "Visa Application Automation ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 433195181,
+          "mode": "list",
+          "cachedResultName": "zernio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uUGt3_wABCoiZlQlrY5wgPaPO1OxHljH60524iatzDw/edit#gid=433195181"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "failed",
+            "Zernio_Post_ID": "={{ $('Create post').item.json.post._id }}"
+          },
+          "matchingColumns": [
+            "Zernio_Post_ID"
+          ],
+          "schema": [
+            {
+              "id": "Post_ID",
+              "displayName": "Post_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Drive_URL",
+              "displayName": "Drive_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Media_Type",
+              "displayName": "Media_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Zernio_Post_ID",
+              "displayName": "Zernio_Post_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1392,
+        48
+      ],
+      "id": "55ce32fb-43bf-4a84-9994-124794401af3",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F6g22eR284kb7Q7z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "zernio-message-received",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        192
+      ],
+      "id": "68d7b58e-b152-4df2-8be5-f13c1c719c15",
+      "name": "Zernio_Message_Webhook1",
+      "webhookId": "zernio-message-received"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d1",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "message.received",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "d2",
+              "leftValue": "={{ $json.body.message.direction }}",
+              "rightValue": "incoming",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        192
+      ],
+      "id": "989eab91-1849-4c4b-8616-a01076ff53e0",
+      "name": "Is_Incoming_Message1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "accounts/fireworks/models/glm-5p2",
+          "mode": "list",
+          "cachedResultName": "ACCOUNTS/FIREWORKS/MODELS/GLM-5P2"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a friendly first-line support assistant replying to a customer DM on social media. Keep replies under 40 words, warm and helpful. Never quote prices, guarantee refunds, or make legal/medical claims. If you can't confidently resolve the request, say a team member will follow up shortly.",
+              "role": "system"
+            },
+            {
+              "content": "=Platform: {{ $json.body.message.platform }}\nCustomer says: {{ $('Zernio_Message_Webhook1').item.json.body.message.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        528,
+        176
+      ],
+      "id": "b6c2647e-04d5-4ed7-929a-a2f8b9163841",
+      "name": "Draft_Reply1",
+      "credentials": {
+        "openAiApi": {
+          "id": "CvxehUrobRsAtPCO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://zernio.com/api/v1/inbox/conversations/{{ $('Zernio_Message_Webhook1').item.json.body.conversation.id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "lateApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "accountId",
+              "value": "={{ $('Zernio_Message_Webhook1').item.json.body.account.id }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        928,
+        176
+      ],
+      "id": "463ba51e-0221-4b27-8ffc-fa914bd85842",
+      "name": "Send_DM_Reply1",
+      "credentials": {
+        "lateApi": {
+          "id": "cdM4cq0REcqf44AN",
+          "name": "Zernio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "comment.received",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.body.comment.author.isOwnAccount }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        448
+      ],
+      "id": "2fcb8366-8ee8-44d8-b348-f4f3b7083c24",
+      "name": "Is_New_Comment"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "accounts/fireworks/models/glm-5p3",
+          "mode": "list",
+          "cachedResultName": "ACCOUNTS/FIREWORKS/MODELS/GLM-5P3"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You reply to Instagram/Facebook comments for a small business page. Keep it under 25 words, warm, on-brand. No prices, no promises, no links.",
+              "role": "system"
+            },
+            {
+              "content": "=Comment: {{ $json.body.comment.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        544,
+        432
+      ],
+      "id": "9d37ceaa-117e-406a-87af-aa031c72cc77",
+      "name": "Draft_Reply",
+      "credentials": {
+        "openAiApi": {
+          "id": "CvxehUrobRsAtPCO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://zernio.com/api/v1/inbox/comments/{{ $('Zernio_Message_Webhook').item.json.body.comment.platformPostId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "lateApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "accountId",
+              "value": "={{ $('Zernio_Message_Webhook').item.json.body.account.id }}"
+            },
+            {
+              "name": "commentId",
+              "value": "={{ $('Zernio_Message_Webhook').item.json.body.comment.id }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        976,
+        432
+      ],
+      "id": "d8a1b009-ed4a-495f-b721-1aa50cc1fcb9",
+      "name": "Reply_To_Comment",
+      "credentials": {
+        "lateApi": {
+          "id": "cdM4cq0REcqf44AN",
+          "name": "Zernio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "zernio-comment-received",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        464
+      ],
+      "id": "4c40cd9f-8690-4903-a223-cb2219885f78",
+      "name": "Zernio_Message_Webhook",
+      "webhookId": "zernio-message-received"
+    }
+  ],
+  "pinData": {
+    "Zernio_Message_Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-openwa-n8n.oopwbe.easypanel.host",
+            "user-agent": "Zernio-Webhooks/1.0",
+            "content-length": "1618",
+            "accept-encoding": "gzip",
+            "cf-ray": "a408f8e24a626119-SEA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "miki-palet.workers.dev",
+            "content-type": "application/json",
+            "x-forwarded-for": "2a06:98c0:3600::103, 172.71.146.150",
+            "x-forwarded-host": "n8n-openwa-n8n.oopwbe.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "1d4ab651a83f",
+            "x-late-event": "comment.received",
+            "x-late-event-id": "f9da9050-62dd-4903-b1cb-72f3c8bfad51",
+            "x-real-ip": "172.71.146.150",
+            "x-zernio-event": "comment.received",
+            "x-zernio-event-id": "f9da9050-62dd-4903-b1cb-72f3c8bfad51"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "f9da9050-62dd-4903-b1cb-72f3c8bfad51",
+            "event": "comment.received",
+            "comment": {
+              "id": "17906478321560942",
+              "postId": "6ab626c9349f87a24b3f14da",
+              "platformPostId": "18137261443619214",
+              "platform": "instagram",
+              "text": "impressive",
+              "author": {
+                "id": "1103741135490615",
+                "username": "john.shopsphere",
+                "isOwnAccount": false,
+                "instagramProfile": {
+                  "isFollower": true,
+                  "isFollowing": true,
+                  "followerCount": 72,
+                  "isVerified": false
+                }
+              },
+              "createdAt": "2026-09-25T09:23:47.116Z",
+              "isReply": false,
+              "parentCommentId": null
+            },
+            "post": {
+              "id": "6ab626c9349f87a24b3f14da",
+              "platformPostId": "18137261443619214",
+              "content": "Automation takes care of the repetitive tasks, so local businesses can focus on customers and growth. 🚀\n\n**Less manual work. More time to grow.**\n\n#BusinessAutomation #LocalBusiness #Automation #AI #BusinessGrowth",
+              "imageUrl": "https://scontent-lhr11-1.cdninstagram.com/v/t51.82787-15/823539938_18125043280844806_7932349231335102386_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=w_CgF0zGlC0Q7kNvwE5p59O&_nc_oc=AdoSRcuhekteBICQtZKRj0vXBakEH9mVqTXzETgR5uri-R1ZsotUzh4YTHbXr-yAHkI&_nc_zt=23&_nc_ht=scontent-lhr11-1.cdninstagram.com&edm=ANQ71j8EAAAA&_nc_gid=i4Gt2zh8JH4jUPCpRZUy3A&_nc_tpa=Q5bMBQJ_RQSkA_hjx67flbHSgYszDYN-rL3EFX1YWuFlkCPlY8JXixOB5Amu2DxcsA-eJhIRbhG8UWVvZw&oh=00_AQJBY7UZwqxzBKEaNmQVuPo5Wgz4pemf1cyA5eXC93_p9g&oe=6ABC014C",
+              "permalink": "https://www.instagram.com/p/Dds9Lu6AE1x/"
+            },
+            "account": {
+              "id": "6ab61f4684cc6e3ac0e45a70",
+              "accountId": "6ab61f4684cc6e3ac0e45a70",
+              "platform": "instagram",
+              "username": "dutchflowai"
+            },
+            "timestamp": "2026-09-25T09:23:47.116Z"
+          },
+          "webhookUrl": "https://n8n-openwa-n8n.oopwbe.easypanel.host/webhook-test/zernio-comment-received",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload media1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media1": {
+      "main": [
+        [
+          {
+            "node": "Create post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create post": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zernio_Message_Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Is_Incoming_Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is_Incoming_Message1": {
+      "main": [
+        [
+          {
+            "node": "Draft_Reply1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft_Reply1": {
+      "main": [
+        [
+          {
+            "node": "Send_DM_Reply1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send_DM_Reply1": {
+      "main": [
+        []
+      ]
+    },
+    "Is_New_Comment": {
+      "main": [
+        [
+          {
+            "node": "Draft_Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft_Reply": {
+      "main": [
+        [
+          {
+            "node": "Reply_To_Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zernio_Message_Webhook": {
+      "main": [
+        [
+          {
+            "node": "Is_New_Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "85c14b84-d938-448b-ad6b-2618f31c9702",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b323478ad28ddb455e050b914ba4bd3bf9b7ea1bb943b283fec2b63fdd301745"
+  },
+  "id": "7Cbh3XJBN4MFxreQ",
+  "tags": []
+}
